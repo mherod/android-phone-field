@@ -7,10 +7,17 @@ import java.util.*
  * Country object that holds the country iso2 code, name, and dial code.
  * @author Ismail Almetwally
  */
-data class Country(val code: String, val name: String, val dialCode: Int) {
+data class Country(
+        val code: String,
+        val name: String,
+        val dialCode: Int
+) {
 
     val displayName: String
-        get() = Locale("", code).getDisplayCountry(Locale.US)
+        get() {
+            val defaultLocale = Locale.getDefault()
+            return Locale("", code).getDisplayCountry(defaultLocale)
+        }
 
     fun getResId(context: Context): Int {
         val name = String.format("country_flag_%s", code.toLowerCase())

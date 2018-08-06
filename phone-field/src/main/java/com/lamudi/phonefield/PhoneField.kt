@@ -59,7 +59,7 @@ abstract class PhoneField @JvmOverloads constructor(context: Context, attrs: Att
         get() = editText?.text.toString()
 
     init {
-        View.inflate(getContext(), this.layoutResId, this)
+        View.inflate(context, layoutResId, this)
         this.updateLayoutAttributes()
         this.prepareView()
     }
@@ -69,18 +69,22 @@ abstract class PhoneField @JvmOverloads constructor(context: Context, attrs: Att
      */
     protected open fun prepareView() {
 
-        spinner = findViewWithTag<View>(resources.getString(R.string.com_lamudi_phonefield_flag_spinner)) as Spinner
+        spinner = resources.getString(R.string.com_lamudi_phonefield_flag_spinner).let { tag ->
+            findViewWithTag(tag) as Spinner
+        }
 
-        editText = findViewWithTag<View>(resources.getString(R.string.com_lamudi_phonefield_edittext)) as EditText
+        editText = resources.getString(R.string.com_lamudi_phonefield_edittext).let { tag ->
+            findViewWithTag(tag) as EditText
+        }
 
         if (spinner == null || editText == null) {
             throw IllegalStateException("Please provide a valid xml layout")
         }
 
         val adapter = CountriesAdapter(context, Countries.COUNTRIES)
-        spinner!!.setOnTouchListener { v, event ->
-            hideKeyboard()
-            false
+
+        spinner?.setOnTouchListener { v, event ->
+            hideKeyboard(); false
         }
 
         val textWatcher = object : TextWatcher {
@@ -91,9 +95,13 @@ abstract class PhoneField @JvmOverloads constructor(context: Context, attrs: Att
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable) {
+
                 var rawNumber = s.toString()
+
                 if (rawNumber.isEmpty()) {
-                    spinner!!.setSelection(mDefaultCountryPosition)
+
+                    spinner?.setSelection(mDefaultCountryPosition)
+
                 } else {
                     if (rawNumber.startsWith("00")) {
                         rawNumber = rawNumber.replaceFirst("00".toRegex(), "+")
@@ -133,30 +141,28 @@ abstract class PhoneField @JvmOverloads constructor(context: Context, attrs: Att
 
     @Throws(NumberParseException::class)
     private fun parsePhoneNumber(number: String): Phonenumber.PhoneNumber {
-        val defaultRegion = if (mCountry != null) mCountry!!.code.toUpperCase() else ""
+
+        val defaultRegion = mCountry?.code?.toUpperCase().orEmpty()
+
         return mPhoneUtil.parseAndKeepRawInput(number, defaultRegion)
     }
 
-    fun setDefaultCountry(countryCode: String) {
-        for (i in Countries.COUNTRIES.indices) {
-            val country = Countries.COUNTRIES[i]
-            if (country.code.equals(countryCode, ignoreCase = true)) {
-                mCountry = country
-                mDefaultCountryPosition = i
-                spinner?.setSelection(i)
+    fun setDefaultCountry(countryCode: String) = Countries.COUNTRIES
+            .forEachIndexed { i, country ->
+                if (country.code.equals(other = countryCode, ignoreCase = true)) {
+                    mCountry = country
+                    mDefaultCountryPosition = i
+                    spinner?.setSelection(i)
+                }
             }
-        }
-    }
 
-    private fun selectCountry(dialCode: Int) {
-        for (i in Countries.COUNTRIES.indices) {
-            val country = Countries.COUNTRIES[i]
-            if (country.dialCode == dialCode) {
-                mCountry = country
-                spinner?.setSelection(i)
+    private fun selectCountry(dialCode: Int) = Countries.COUNTRIES
+            .forEachIndexed { i, country ->
+                if (country.dialCode == dialCode) {
+                    mCountry = country
+                    spinner?.setSelection(i)
+                }
             }
-        }
-    }
 
     private fun hideKeyboard() {
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
@@ -169,7 +175,7 @@ abstract class PhoneField @JvmOverloads constructor(context: Context, attrs: Att
         editText!!.setHint(resId)
     }
 
-    open fun setError(error: String) {
+    open fun setError(error: String?) {
         editText?.error = error
     }
 
