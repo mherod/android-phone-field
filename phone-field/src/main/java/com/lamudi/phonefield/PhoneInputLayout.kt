@@ -25,9 +25,11 @@ open class PhoneInputLayout @JvmOverloads constructor(
 
     private var textInputLayout: TextInputLayout? = null
 
-    var text
+    var text: CharSequence
         get() = editText?.text ?: ""
-        set(value) = editText?.setText(value)!!
+        set(value) {
+            editText?.setText(value)
+        }
 
     override fun getLayoutResId(): Int = R.layout.phone_text_input_layout
 
