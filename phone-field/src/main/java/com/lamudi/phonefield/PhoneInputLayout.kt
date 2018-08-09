@@ -25,6 +25,10 @@ open class PhoneInputLayout @JvmOverloads constructor(
 
     private var textInputLayout: TextInputLayout? = null
 
+    var text
+        get() = editText?.text ?: ""
+        set(value) = editText?.setText(value)!!
+
     override fun getLayoutResId(): Int = R.layout.phone_text_input_layout
 
     override fun updateLayoutAttributes() {
@@ -36,8 +40,7 @@ open class PhoneInputLayout @JvmOverloads constructor(
     override fun prepareView() {
         super.prepareView()
 
-        textInputLayout = resources.getString(R.string.com_lamudi_phonefield_til_phone)
-                .let { findViewWithTag(it) }
+        textInputLayout = findViewWithTag(resources.getString(R.string.com_lamudi_phonefield_til_phone))
     }
 
     override fun setHint(resId: Int) {
