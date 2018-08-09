@@ -13,6 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:autofillHints="phone"
         android:inputType="phone"
         android:tag="@string/com_lamudi_phonefield_edittext"
         android:textColor="@color/pf_grey" />

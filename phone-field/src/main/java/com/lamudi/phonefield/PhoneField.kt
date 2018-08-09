@@ -14,7 +14,11 @@ import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
 
-abstract class PhoneField @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
+abstract class PhoneField @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
+) : LinearLayout(context, attrs, defStyleAttr) {
 
     var spinner: Spinner? = null
         private set
@@ -53,13 +57,17 @@ abstract class PhoneField @JvmOverloads constructor(context: Context, attrs: Att
         } catch (ignored: NumberParseException) {
         }
 
-    abstract val layoutResId: Int
+    abstract fun getLayoutResId(): Int
 
     private val rawInput: String
         get() = editText?.text.toString()
 
     init {
-        View.inflate(context, layoutResId, this)
+        init(context)
+    }
+
+    private fun init(context: Context) {
+        View.inflate(context, getLayoutResId(), this)
         this.updateLayoutAttributes()
         this.prepareView()
     }

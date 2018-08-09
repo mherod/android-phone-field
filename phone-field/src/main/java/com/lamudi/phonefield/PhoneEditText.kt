@@ -18,7 +18,7 @@ class PhoneEditText @JvmOverloads constructor(
         defStyleAttr
 ) {
 
-    override val layoutResId: Int = R.layout.phone_edit_text
+    override fun getLayoutResId(): Int = R.layout.phone_edit_text
 
     override fun updateLayoutAttributes() {
 
@@ -26,6 +26,11 @@ class PhoneEditText @JvmOverloads constructor(
         gravity = Gravity.CENTER_VERTICAL
         orientation = LinearLayout.HORIZONTAL
 
-        setPadding(0, context.resources.getDimensionPixelSize(R.dimen.padding_large), 0, 0)
+        setPadding(
+                0,
+                context?.resources?.getDimensionPixelSize(R.dimen.padding_large) ?: 0,
+                0,
+                0
+        )
     }
 }

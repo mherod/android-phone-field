@@ -25,8 +25,7 @@ open class PhoneInputLayout @JvmOverloads constructor(
 
     private var textInputLayout: TextInputLayout? = null
 
-    override val layoutResId: Int
-        get() = R.layout.phone_text_input_layout
+    override fun getLayoutResId(): Int = R.layout.phone_text_input_layout
 
     override fun updateLayoutAttributes() {
         layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
