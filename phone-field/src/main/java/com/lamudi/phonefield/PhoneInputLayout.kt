@@ -31,6 +31,12 @@ open class PhoneInputLayout @JvmOverloads constructor(
             editText?.setText(value)
         }
 
+    val error: CharSequence
+        get() = editText?.error ?: ""
+
+    val hasError: Boolean
+        get() = error.isNotBlank()
+
     override fun getLayoutResId(): Int = R.layout.phone_text_input_layout
 
     override fun updateLayoutAttributes() {
