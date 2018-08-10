@@ -89,7 +89,7 @@ abstract class PhoneField @JvmOverloads constructor(
             throw IllegalStateException("Please provide a valid xml layout")
         }
 
-        val adapter = CountriesAdapter(context, Countries.COUNTRIES)
+        val adapter = CountriesAdapter(context, countries)
 
         spinner?.setOnTouchListener { v, event ->
             hideKeyboard(); false
@@ -155,7 +155,7 @@ abstract class PhoneField @JvmOverloads constructor(
         return mPhoneUtil.parseAndKeepRawInput(number, defaultRegion)
     }
 
-    fun setDefaultCountry(countryCode: String) = Countries.COUNTRIES
+    fun setDefaultCountry(countryCode: String) = countries
             .forEachIndexed { i, country ->
                 if (country.code.equals(other = countryCode, ignoreCase = true)) {
                     mCountry = country
@@ -164,13 +164,19 @@ abstract class PhoneField @JvmOverloads constructor(
                 }
             }
 
-    private fun selectCountry(dialCode: Int) = Countries.COUNTRIES
+    private fun selectCountry(dialCode: Int) = countries
             .forEachIndexed { i, country ->
                 if (country.dialCode == dialCode) {
                     mCountry = country
                     spinner?.setSelection(i)
                 }
             }
+
+    private val countries by lazy {
+        Countries.COUNTRIES.filter { country ->
+            country.code == "gb" || country.code == "us"
+        }
+    }
 
     private fun hideKeyboard() {
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
